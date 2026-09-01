@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+@inject RoleService RoleService
+@rendermode InteractiveServer
+
+<RadzenCard Class="home-card">
+
+    <h1 class="home-title">Bienvenue sur <span class="brand">GovaTransit</span></h1>
+    <p class="home-subtitle">Choisissez votre mode de connexion :</p>
+
+    <div class="choice-container">
+
+        <!-- UTILISATEUR -->
+        <RadzenCard class="choice-card" Click="@GoToUser">
+            <div class="emoji">👤</div>
+            <h3>Utilisateur</h3>
+            <p>Achetez des tickets, consultez les lignes de bus.</p>
+
+            <RadzenButton Text="Entrer comme Utilisateur"
+                          Click="@GoToUser"
+                          Icon="person"
+                          Style="width:100%; margin-top:10px"
+                          Class="user-btn" />
+        </RadzenCard>
+
+        <!-- ADMIN -->
+        <RadzenCard class="choice-card" Click="@GoToAdmin">
+            <div class="emoji">🛠️</div>
+            <h3>Administrateur</h3>
+            <p>Gérez le réseau, les lignes et les statistiques.</p>
+
+            <RadzenButton Text="Entrer comme Admin"
+                          Click="@GoToAdmin"
+                          Icon="admin_panel_settings"
+                          Style="width:100%; margin-top:10px"
+                          Class="admin-btn" />
+        </RadzenCard>
+
+    </div>
+</RadzenCard>
+
+@code {
+    private void GoToUser()
+    {
+        RoleService.SetRole("User");
+        NavManager.NavigateTo("/lines");
+    }
+
+    private void GoToAdmin()
+    {
+        RoleService.SetRole("Admin");
+        NavManager.NavigateTo("/admin");
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/lines/{LineCode}"
+@rendermode InteractiveServer 
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@inject LineService LineService
+@inject StationService StationService
+@inject NavigationManager NavManager
+
+<h3>Line details</h3>
+
+@if (line == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h4>@line.Name (@line.LineCode)</h4>
+    <p>@line.Description</p>
+    <p>Category: @line.Category</p>
+    <p>Status: @(line.IsActive ? "Active" : "Inactive")</p>
+
+    <h5>Stations</h5>
+    @if (stations == null)
+    {
+        <p>Loading stations...</p>
+    }
+    else if (!stations.Any())
+    {
+        <p>No stations for this line.</p>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@stations" TItem="Station" AllowPaging="true" PageSize="5">
+            <Columns>
+                <RadzenDataGridColumn TItem="Station" Property="StationCode" Title="Code" />
+                <RadzenDataGridColumn TItem="Station" Property="Name" Title="Name" />
+                <RadzenDataGridColumn TItem="Station" Property="Zone" Title="Zone" />
+            </Columns>
+        </RadzenDataGrid>
+    }
+
+    <div class="mt-3">
+        <RadzenButton Text="Buy ticket for this line"
+                      Icon="shopping_cart"
+                      Click="@(() => NavManager.NavigateTo($"/tickets/buy/{line.LineCode}"))" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? LineCode { get; set; }
+
+    private Line? line;
+    private List<Station>? stations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(LineCode))
+            return;
+
+        line = await LineService.GetByCodeAsync(LineCode);
+        stations = await StationService.GetByLineAsync(LineCode);
+    }
+}

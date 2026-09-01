@@ -1,0 +1,180 @@
+﻿@page "/tickets"
+@rendermode InteractiveServer
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using Radzen
+@using Radzen.Blazor
+
+@inject TicketService TicketService
+@inject LineService LineService
+@inject Radzen.NotificationService Notify
+@inject Radzen.DialogService DialogService
+@inject NavigationManager NavigationManager
+
+<h3>My tickets (demo user U002)</h3>
+
+<RadzenButton Text="Buy new ticket" Icon="add_circle"
+              Style="margin-bottom:10px"
+              Click="GoToBuyTicket" />
+
+@if (tickets == null)
+{
+    <p>Loading...</p>
+}
+else if (!tickets.Any())
+{
+    <p>No tickets yet.</p>
+}
+else
+{
+    <RadzenDataGrid Data="@tickets"
+                    TItem="TicketView"
+                    AllowPaging="true"
+                    PageSize="10"
+                    AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="TicketView" Property="TicketId" Title="Ticket" Width="150px" />
+            <RadzenDataGridColumn TItem="TicketView" Property="LineName" Title="Line" />
+            <RadzenDataGridColumn TItem="TicketView" Property="TicketType" Title="Type" Width="120px" />
+
+            <RadzenDataGridColumn TItem="TicketView" Title="Status">
+                <Template Context="t">
+                    @{
+                        var color = t.Status switch
+                        {
+                            "Activated" => "green",
+                            "Expired" => "red",
+                            "Used" => "gray",
+                            _ => "orange"
+                        };
+                    }
+                    <b style="color:@color">@t.Status</b>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="TicketView" Title="Actions" Width="220px">
+                <Template Context="t">
+                    @if (t.Status == "Purchased")
+                    {
+                        <RadzenButton Text="Activate"
+                                      Icon="play_arrow"
+                                      ButtonStyle="ButtonStyle.Primary"
+                                      Size="ButtonSize.Small"
+                                      Click="@(()=>ActivateTicket(t))" />
+                    }
+
+                    @if (t.Status == "Activated")
+                    {
+                        <RadzenButton Text="Show"
+                                      Icon="qr_code"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Size="ButtonSize.Small"
+                                      Click="@(()=>NavigationManager.NavigateTo($"/tickets/show/{t.Id}"))" />
+                    }
+
+                    @if (t.Status != "Activated")
+                    {
+                        <RadzenButton Text="Delete"
+                                      Icon="delete"
+                                      ButtonStyle="ButtonStyle.Danger"
+                                      Size="ButtonSize.Small"
+                                      Style="margin-left:5px"
+                                      Click="@(()=>DeleteTicket(t))" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    private const string DemoUserId = "U002";
+    private List<TicketView>? tickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTickets();
+    }
+
+    private async Task LoadTickets()
+    {
+        var list = await TicketService.GetByUserAsync(DemoUserId);
+        tickets = new List<TicketView>();
+
+        foreach (var t in list)
+        {
+            var line = await LineService.GetByCodeAsync(t.LineCode);
+
+            tickets.Add(new TicketView
+                {
+                    Id = t.Id,
+                    TicketId = t.TicketId,
+                    LineCode = t.LineCode,
+                    LineName = line?.Name ?? "(unknown)",
+                    PurchaseDate = t.PurchaseDate,
+                    Price = t.Price,
+                    Status = t.Status,
+                    TicketType = t.TicketType,
+                    ActivationDate = t.ActivationDate,
+                    ValidUntil = t.ValidUntil
+                });
+        }
+    }
+
+    private async Task ActivateTicket(TicketView tv)
+    {
+        await TicketService.ActivateAsync(tv.Id!);
+        await LoadTickets();
+        Notify.Notify(NotificationSeverity.Success, "Activated", "Ticket activated!");
+    }
+
+    private async Task DeleteTicket(TicketView tv)
+    {
+        if (string.IsNullOrWhiteSpace(tv.Id))
+        {
+            await DialogService.Alert("Unable to delete: missing Ticket ID.", "Error");
+            return;
+        }
+
+        bool confirmed = (await DialogService.Confirm(
+            $"Are you sure you want to delete ticket {tv.TicketId}?",
+            "Confirm Delete",
+            new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No" }
+        )) == true;
+
+        if (!confirmed)
+            return;
+
+        try
+        {
+            await TicketService.DeleteAsync(tv.Id);
+            await LoadTickets();
+            Notify.Notify(NotificationSeverity.Success, "Deleted", "Ticket deleted successfully.");
+        }
+        catch (Exception ex)
+        {
+            await DialogService.Alert($"Delete failed: {ex.Message}", "Error");
+        }
+    }
+
+    private void GoToBuyTicket()
+    {
+        NavigationManager.NavigateTo("/tickets/buy");
+    }
+
+    private class TicketView
+    {
+        public string? Id { get; set; }
+        public string TicketId { get; set; } = "";
+        public string LineCode { get; set; } = "";
+        public string LineName { get; set; } = "";
+        public DateTime PurchaseDate { get; set; }
+        public double Price { get; set; }
+        public string Status { get; set; } = "";
+        public string TicketType { get; set; } = "";
+        public DateTime? ActivationDate { get; set; }
+        public DateTime? ValidUntil { get; set; }
+    }
+}

@@ -1,0 +1,115 @@
+﻿@page "/tickets/buy"
+@page "/tickets/buy/{LineCode}"
+@rendermode InteractiveServer
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using Radzen
+@using Radzen.Blazor
+
+@inject LineService LineService
+@inject TicketService TicketService
+@inject NavigationManager Navigation
+@inject Radzen.NotificationService Notify
+
+<h3>Buy a Ticket</h3>
+
+@if (lines == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+
+        <!-- SELECT LINE -->
+        <div class="mb-3">
+            <RadzenLabel Text="Line" />
+            <RadzenDropDown @bind-Value="model.LineCode"
+                            Data="@lines"
+                            TextProperty="Name"
+                            ValueProperty="LineCode"
+                            Style="width:100%" />
+            <ValidationMessage For="@(()=> model.LineCode)" />
+        </div>
+
+        <!-- SELECT TICKET TYPE -->
+        <div class="mb-3">
+            <RadzenLabel Text="Ticket Type" />
+            <RadzenDropDown @bind-Value="model.TicketType"
+                            Data="@ticketTypes"
+                            Style="width:100%"
+                            Change="@UpdatePrice" />
+            <ValidationMessage For="@(()=> model.TicketType)" />
+        </div>
+
+        <!-- PRICE -->
+        <div class="mb-3">
+            <RadzenLabel Text="Price" />
+            <RadzenNumeric @bind-Value="model.Price"
+                           ReadOnly="true"
+                           Style="width:100%" />
+        </div>
+
+        <!-- BUTTONS -->
+        <RadzenButton Text="Purchase"
+                      Icon="shopping_cart"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Type="ButtonType.Submit" />
+
+        <RadzenButton Text="Cancel"
+                      ButtonStyle="ButtonStyle.Secondary"
+                      Style="margin-left: 10px"
+                      Click="@(()=>Navigation.NavigateTo("/tickets"))" />
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string? LineCode { get; set; }
+
+    private Ticket model = new Ticket
+        {
+            UserId = "U002",
+            Price = 4.00,
+        };
+
+    private List<Line>? lines;
+    private List<string> ticketTypes = new() { "OneRide90", "ThreeDay", "SevenDay", "Monthly" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        lines = await LineService.GetAllAsync();
+
+        // If LineCode is passed in the URL, pre-select the line
+        if (!string.IsNullOrEmpty(LineCode))
+        {
+            model.LineCode = LineCode;
+        }
+    }
+
+    private void UpdatePrice(object? value)
+    {
+        model.Price = model.TicketType switch
+        {
+            "OneRide90" => 4.00,
+            "ThreeDay" => 20.00,
+            "SevenDay" => 33.00,
+            "Monthly" => 100.00,
+            _ => 4.00
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        model.Status = "Purchased";
+        model.PurchaseDate = DateTime.UtcNow;
+
+        await TicketService.CreateAsync(model);
+
+        Notify.Notify(NotificationSeverity.Success, "Success", "Ticket purchased!");
+        Navigation.NavigateTo("/tickets");
+    }
+}

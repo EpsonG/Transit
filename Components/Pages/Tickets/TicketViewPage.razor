@@ -1,0 +1,80 @@
+﻿@page "/tickets/show/{id}"
+@rendermode InteractiveServer
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@inject TicketService TicketService
+@inject NavigationManager Navigation
+
+<h3>Active Ticket</h3>
+
+@if (ticket == null)
+{
+    <p>Loading ticket...</p>
+}
+else if (ticket.Status != "Activated")
+{
+    <p>This ticket is not activated.</p>
+}
+else
+{
+    <div class="card p-3 border rounded" style="max-width:300px; text-align:center;">
+        <h4>@ticket.LineCode</h4>
+
+        <img src="@qrUrl" class="img-fluid"
+             style="border:3px solid black; width:200px; height:200px;" />
+
+        <h5>@timeLeft</h5>
+
+        <RadzenButton Text="Close"
+                      Icon="close"
+                      Click="@(()=> Navigation.NavigateTo("/tickets"))"
+                      Style="margin-top:15px" />
+    </div>
+}
+
+@code {
+    [Parameter] public string id { get; set; } = "";
+    private Ticket? ticket;
+    private string qrUrl = "";
+    private string timeLeft = "";
+    private System.Timers.Timer? timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ticket = await TicketService.GetByIdAsync(id);
+
+        if (ticket != null && ticket.Status == "Activated")
+        {
+            qrUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={ticket.TicketId}";
+            StartTimer();
+        }
+    }
+
+    private void StartTimer()
+    {
+        timer = new System.Timers.Timer(1000);
+        timer.Elapsed += (s, e) =>
+        {
+            if (ticket?.ValidUntil != null)
+            {
+                var remaining = ticket.ValidUntil.Value - DateTime.UtcNow;
+
+                if (remaining <= TimeSpan.Zero)
+                {
+                    timeLeft = "Expired!";
+                    ticket.Status = "Expired";
+                    InvokeAsync(StateHasChanged);
+                    timer!.Stop();
+                }
+                else
+                {
+                    timeLeft = $"Valid: {remaining:hh\\:mm\\:ss}";
+                    InvokeAsync(StateHasChanged);
+                }
+            }
+        };
+        timer.Start();
+    }
+}

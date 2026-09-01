@@ -1,0 +1,385 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lexend:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+/* --- GLOBAL BACKGROUND --- */
+:root {
+    --rz-serie-1: #708B75 !important;
+}
+body, .rz-body {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    background: #f1f5f9 !important;
+    color: #011C27;
+}
+.rz-header {
+    background: #708B75 !important;
+}
+.container {
+    background: #f1f5f9 !important;
+    color: #011C27;
+}
+.rz-panel-menu {
+    background: #f1f5f9 !important;
+    color: #011C27;
+}
+    /* --- CENTERED CONTAINER --- */
+    .gt-main {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+/* --- GLASSMORPHISM CARD --- */
+.gt-card {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    padding: 1rem;
+    margin-bottom: 3rem;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+.rz-data-grid {
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-radius: 18px !important;
+    margin-top: 2rem !important;
+    padding: 1rem;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+    color: #F0EFF4;
+}
+
+/* Title */
+.gt-page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.3);
+}
+
+/* --- TOOLBAR --- */
+.gt-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* --- PREMIUM BUTTONS --- */
+
+/* Main button */
+.gt-btn-primary {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white !important;
+    border: none !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+    transition: 0.25s ease;
+}
+
+    .gt-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+    }
+
+/* Outline button */
+.gt-btn-outline {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    color: white !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: 0.25s ease;
+}
+
+    .gt-btn-outline:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+/* Danger button */
+.gt-btn-danger {
+    background: rgba(244, 63, 94, 0.8);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    color: white !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4);
+    transition: 0.25s ease;
+}a
+
+    .gt-btn-danger:hover {
+        background: rgba(244, 63, 94, 1);
+        transform: translateY(-2px);
+    }
+
+/* --- DATA GRID --- */
+.rz-data-grid {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+    .rz-data-grid .rz-column-header {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .rz-data-grid tr {
+        color: white;
+    }
+
+        .rz-data-grid tr:nth-child(even) {
+            background: rgba(255,255,255,0.08);
+        }
+
+.rz-paginator {
+    background: transparent;
+    color: white;
+}
+
+/* --- INPUTS --- */
+input, select, textarea, .rz-inputtext {
+    background: rgba(255,255,255,0.21) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    color: grey !important;
+    backdrop-filter: blur(8px);
+}
+
+.rz-dropdown {
+    background: rgba(255,255,255,0.21) !important;
+}
+
+.rz-dropdown-item {
+    background: rgba(60,60,60,0.6);
+    color: white;
+}
+
+/* --- CHART --- */
+.rz-chart {
+    background: rgba(255,255,255,0.12);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+}
+.home-card {
+    max-width: 900px;
+    margin: 80px auto;
+    text-align: center;
+    padding: 50px 25px;
+    background: var(--rz-primary-dark, #0a2540);
+    color: white;
+    border-radius: 20px;
+    animation: fadeIn .7s ease-in-out;
+}
+
+.brand {
+    color: #35C084;
+}
+
+.home-title {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.home-subtitle {
+    opacity: 0.85;
+    margin-bottom: 35px;
+}
+
+.choice-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.choice-card {
+    width: 280px;
+    text-align: center;
+    padding: 25px;
+    cursor: pointer;
+    border-radius: 18px !important;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+    .choice-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+    }
+
+.emoji {
+    font-size: 50px;
+    margin-bottom: 12px;
+}
+
+.user-btn {
+    background: #35C084;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+    .user-btn:hover {
+        background: #2aa573;
+    }
+
+.admin-btn {
+    background: #1d4ed8;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+    .admin-btn:hover {
+        background: #153a9b;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.slide-icon {
+    font-size: 70px;
+    color: #35C084;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+.role-icon {
+    font-size: 48px;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.brand-icon {
+    font-size: 60px;
+    color: #35C084;
+    margin-bottom: 15px;
+}
+/* HOME CARD */
+.gt-home-card, .home-card {
+    max-width: 950px;
+    margin: 60px auto;
+    padding: 45px 30px;
+    text-align: center;
+    background: #0a2540;
+    color: #000;
+    border-radius: 22px;
+    animation: fadeIn .7s ease-in-out;
+}
+
+/* TITRE */
+.gt-brand {
+    color: #35C084;
+}
+
+.gt-title {
+    font-size: 2.3rem;
+}
+
+.gt-subtitle {
+    opacity: .82;
+    margin-bottom: 20px;
+}
+
+/* SLIDER */
+.gt-carousel {
+    width: 100%;
+    max-width: 780px;
+    margin: auto;
+}
+
+.gt-slide {
+    padding: 35px 10px;
+    text-align: center;
+}
+
+.gt-slide-icon {
+    font-size: 70px;
+    color: #35C084;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+/* ROLE CARDS */
+.gt-choice-zone {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.gt-role-card {
+    width: 260px;
+    padding: 22px;
+    border-radius: 18px !important;
+    transition: .28s;
+    cursor: pointer;
+    background: #ffffff;
+    color: #011C27;
+}
+
+    .gt-role-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 18px 32px rgba(0,0,0,0.28);
+    }
+
+/* ICÔNES */
+.gt-brand-icon {
+    font-size: 65px;
+    color: #35C084;
+    margin-bottom: 10px;
+}
+
+.gt-role-icon {
+    font-size: 50px;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+/* BUTTONS */
+.gt-btn-user {
+    background: #35C084 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    width: 100%;
+}
+
+    .gt-btn-user:hover {
+        background: #2aa573 !important;
+    }
+
+.gt-btn-admin {
+    background: #1d4ed8 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    width: 100%;
+}
+
+    .gt-btn-admin:hover {
+        background: #153a9b !important;
+    }
+
+/* Bounce animation */
+@keyframes bounce {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+

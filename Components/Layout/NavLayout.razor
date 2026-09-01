@@ -1,0 +1,31 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@inherits LayoutComponentBase
+@* Layout principal de l'application.
+   - Utilise les composants Radzen pour construire une sidebar
+     et une zone de contenu principale.
+   - Le placeholder `@Body` rendra le contenu des pages enfants. *@
+<RadzenComponents @rendermode='InteractiveServer' />
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
+            <RadzenText Text="GovaTransit" TextStyle="TextStyle.H5" TagName="TagName.H1" class="rz-color-white" />
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
+        <NavMenu />
+    </RadzenSidebar>
+    <RadzenBody>
+        <div class="container">
+            @Body
+        </div>
+    </RadzenBody>
+    <RadzenDialog />
+    <RadzenNotification />
+</RadzenLayout>
+
+@code {
+    bool sidebar1Expanded = true;
+}

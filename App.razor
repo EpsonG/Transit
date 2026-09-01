@@ -1,0 +1,40 @@
+﻿@using Radzen.Blazor
+@using Radzen
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Routing
+@namespace BlazorApp1.Components
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="custom.css" />
+    <link rel="stylesheet" href="BlazorApp1.styles.css" />
+
+    <HeadOutlet />
+    <RadzenTheme Theme="material" />
+</head>
+<body>
+    <!-- Nouveau routeur Razor Components (.NET 8/9) -->
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="typeof(BlazorApp1.Components.Layout.MainLayout)" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="typeof(BlazorApp1.Components.Layout.MainLayout)">
+                <p>Page non trouvée.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+    <!-- Scripts nécessaires à l'interactivité côté serveur + Radzen -->
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+</body>
+</html>

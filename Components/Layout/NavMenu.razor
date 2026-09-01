@@ -1,0 +1,23 @@
+﻿<!-- Ce composant définit le menu de navigation latéral de l'application. -->
+
+<!-- Injection du service RoleService pour vérifier le rôle de l'utilisateur. -->
+@inject RoleService RoleService
+
+<!-- Utilisation du composant RadzenPanelMenu pour afficher le menu. -->
+<RadzenPanelMenu Style="height:100%">
+
+    <!-- Affiche des liens spécifiques si l'utilisateur est un administrateur. -->
+    @if (RoleService.IsAdmin)
+    {
+        <RadzenPanelMenuItem Text="Dashboard" Path="/admin" Icon="dashboard" />
+    }else
+    {
+        <!-- Affiche les liens pour les utilisateurs non-administrateurs. -->
+        <RadzenPanelMenuItem Text="Lines" Path="/lines" Icon="directions_bus" />
+        <RadzenPanelMenuItem Text="Tickets" Path="/tickets" Icon="confirmation_number" />
+    }
+
+    <!-- Lien de déconnexion/sortie, visible par tous les utilisateurs. -->
+    <RadzenPanelMenuItem Text="Exit" Path="/" Icon="logout" Style="color:red;font-weight:bold;" />
+
+</RadzenPanelMenu>

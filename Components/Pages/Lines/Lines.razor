@@ -1,0 +1,65 @@
+﻿@page "/lines"
+@rendermode InteractiveServer
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using Radzen
+@using Radzen.Blazor
+
+@inject LineService LineService
+@inject NavigationManager NavManager
+
+<h3>Lines</h3>
+
+@if (lines == null)
+{
+    <p>Loading...</p>
+}
+else if (!lines.Any())
+{
+    <p>No lines found.</p>
+}
+else
+{
+    <RadzenDataGrid Data="@lines" TItem="Line"
+                    AllowPaging="true" PageSize="5"
+                    AllowSorting="true"
+                    RowSelect="OnRowSelect">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="Line" Property="LineCode" Title="Code" />
+            <RadzenDataGridColumn TItem="Line" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="Line" Property="Description" Title="Description" />
+            <RadzenDataGridColumn TItem="Line" Property="Category" Title="Category" />
+            <RadzenDataGridColumn TItem="Line" Property="IsActive" Title="Active" />
+
+            <RadzenDataGridColumn TItem="Line" Title="Actions">
+                <Template Context="l">
+                    <RadzenButton Text="Details"
+                                  Icon="info"
+                                  Size="ButtonSize.Small"
+                                  Click="@(() => GoToDetails(l.LineCode))" />
+                </Template>
+            </RadzenDataGridColumn>
+
+        </Columns>
+
+    </RadzenDataGrid>
+}
+
+@code {
+    private List<Line>? lines;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lines = await LineService.GetAllAsync();
+    }
+
+    private void OnRowSelect(Line l) => GoToDetails(l.LineCode);
+
+    private void GoToDetails(string lineCode)
+    {
+        NavManager.NavigateTo($"/lines/{lineCode}");
+    }
+}

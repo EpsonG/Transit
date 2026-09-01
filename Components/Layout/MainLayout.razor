@@ -1,0 +1,21 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@inherits LayoutComponentBase
+
+@* Layout principal de l'application.
+   - Utilise les composants Radzen pour construire une sidebar
+     et une zone de contenu principale.
+   - Le placeholder `@Body` rendra le contenu des pages enfants. *@
+<RadzenComponents @rendermode='InteractiveServer' />
+
+<RadzenLayout>
+    <RadzenBody>
+        <div class="container">
+            @Body
+        </div>
+    </RadzenBody>
+    <RadzenDialog />
+    <RadzenNotification />
+</RadzenLayout>
+
+

@@ -1,0 +1,80 @@
+﻿@page "/admin"
+@rendermode InteractiveServer
+@attribute [Layout(typeof(BlazorApp1.Components.Layout.NavLayout))]
+
+@* Définit l'URL pour accéder à cette page. *@
+@* Indique que le composant s'exécute sur le serveur avec une connexion SignalR. *@
+@* Spécifie le layout à utiliser pour cette page. *@
+
+@* Importe les espaces de noms pour utiliser les modèles et les services. *@
+@using BlazorApp1.Models 
+@using BlazorApp1.Services 
+@* Injecte les services nécessaires pour récupérer les données. *@
+@inject TicketService TicketService 
+@inject LogService LogService 
+
+<h3>Admin dashboard</h3>
+
+@* Affiche un message de chargement tant que les données ne sont pas prêtes. *@
+@if (lineStats == null || logs == null) 
+{
+    <p>Loading...</p>
+}
+else
+{
+    @* Section pour afficher les statistiques des tickets par ligne. *@
+    <h4>Tickets per line</h4> 
+    @if (!lineStats.Any())
+    {
+        <p>No ticket statistics available.</p>
+    }
+    else
+    {
+        <RadzenChart Style="height:400px">
+            @* Graphique à barres pour visualiser le nombre de tickets par ligne. *@
+            <RadzenColumnSeries Data="@lineStats"
+                                CategoryProperty="LineCode"
+                                ValueProperty="TicketsCount" />
+            <RadzenCategoryAxis />
+            <RadzenValueAxis />
+        </RadzenChart>
+
+        @* Grille de données pour afficher les statistiques sous forme de tableau. *@
+        <RadzenDataGrid Data="@lineStats" TItem="LineStat" AllowPaging="true" PageSize="5" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="LineStat" Property="LineCode" Title="Line" />
+                <RadzenDataGridColumn TItem="LineStat" Property="TicketsCount" Title="Tickets" />
+            </Columns>
+        </RadzenDataGrid>
+    }
+
+    @* Section pour afficher les logs récents. *@
+    <h4 class="mt-4">Recent logs</h4>
+    @* Grille de données pour afficher les logs avec pagination et tri. *@
+    <RadzenDataGrid Data="@logs" TItem="Log" AllowPaging="true" PageSize="10" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="Log" Property="Timestamp" Title="Time" FormatString="{0:yyyy-MM-dd HH:mm}" />
+            <RadzenDataGridColumn TItem="Log" Property="UserId" Title="User" />
+            <RadzenDataGridColumn TItem="Log" Property="Action" Title="Action" />
+            <RadzenDataGridColumn TItem="Log" Property="EntityType" Title="Entity" />
+            <RadzenDataGridColumn TItem="Log" Property="EntityId" Title="Entity ID" />
+            <RadzenDataGridColumn TItem="Log" Property="Message" Title="Message" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    // Champs privés pour stocker les données récupérées depuis les services.
+    private List<LineStat>? lineStats;
+    private List<Log>? logs;
+
+    /// <summary>
+    /// Méthode du cycle de vie de Blazor, appelée à l'initialisation du composant.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        // Appels asynchrones pour récupérer les statistiques des tickets et les logs.
+        lineStats = await TicketService.GetTicketCountPerLineAsync();
+        logs = await LogService.GetAllAsync();
+    }
+}
